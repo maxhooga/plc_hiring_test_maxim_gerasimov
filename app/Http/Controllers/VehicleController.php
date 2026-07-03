@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Services\VehicleViewCounter;
 use Illuminate\Http\JsonResponse;
 
 class VehicleController extends Controller
 {
+    public function __construct(private VehicleViewCounter $viewCounter) {}
+
     public function show(Vehicle $vehicle): JsonResponse
     {
-        // TODO: return the vehicle and increment its view counter.
-        //   This endpoint will be hit ~50 req/sec at peak.
-        //   Naive UPDATE … SET views = views + 1 on every request is the wrong answer.
-        return response()->json(['error' => 'Not implemented'], 501);
+        $this->viewCounter->recordView($vehicle->id);
+
+        return response()->json($vehicle);
     }
 
     public function trending(): JsonResponse
