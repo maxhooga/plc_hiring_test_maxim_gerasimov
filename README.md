@@ -23,7 +23,9 @@ npm run dev          # terminal 1
 php artisan serve    # terminal 2
 ```
 
-Open http://127.0.0.1:8000
+Open http://127.0.0.1:8000 — click vehicles on the left to record views and watch the trending widget update on the right.
+
+For scheduled cache flushes in local dev, run `php artisan schedule:work` in a third terminal (optional; trending still works without it because unflushed cache counts are included in the API response).
 
 ### Option B — DDEV
 
@@ -44,10 +46,13 @@ Open https://hiring-test.ddev.site
 
 ## What's in here
 
-- `vehicles` table seeded with 500 random vehicles.
-- `vehicle_views` table — minimal placeholder; reshape or replace it as your approach requires.
-- `app/Http/Controllers/VehicleController.php` — both endpoints return `501` with TODO notes.
-- `resources/js/components/TrendingVehicles.vue` — empty component scaffold.
+- `vehicles` table seeded with 500 random vehicles (`php artisan migrate --seed`).
+- `vehicle_views` hourly aggregates (`vehicle_id`, `hour`, `count`) with a cache-backed view counter and scheduled flush.
+- `GET /api/vehicles/{id}` — vehicle detail + view increment.
+- `GET /api/vehicles/trending` — top 10 most-viewed vehicles in the last 24 hours.
+- `GET /api/vehicles` — demo browse list for the local UI only.
+- `resources/js/components/TrendingVehicles.vue` — trending widget with 30s polling.
+- `tests/Feature/VehicleTrendingTest.php` — API contract tests (TDD).
 
 SQLite is the default and needs no setup. Switch to MySQL or Redis in `.env` if your approach needs them. See `TASK.md` for the constraint on adding new packages.
 
