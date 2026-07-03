@@ -101,7 +101,8 @@ class VehicleTrendingTest extends TestCase
 
         DB::table('vehicle_views')->insert([
             'vehicle_id' => $stale->id,
-            'viewed_at' => now()->subHours(25),
+            'hour' => now()->subHours(25)->startOfHour(),
+            'count' => 5,
         ]);
 
         $response = $this->getJson('/api/vehicles/trending');
